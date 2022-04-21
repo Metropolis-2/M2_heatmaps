@@ -21,7 +21,7 @@ The code requires ```PYQGIS```.
 See [here](https://github.com/conda-forge/qgis-feedstock) for more information.
 
 ## RUN THIS IN SHELL
-The ```*.log``` files were named inside each folder from the Metropolis2 [output](https://data.4tu.nl/articles/dataset/Simulation_dataset_for_research_project_Metropolis_2/19323263)
+The ```*.log``` files were named inside each folder from the Metropolis 2 [output](https://data.4tu.nl/articles/dataset/Simulation_dataset_for_research_project_Metropolis_2/19323263)
 
 Below is an example of what to run inside each of the three folders. The example is specific to ```Output_Decentralised``` directory
 ``` shell
@@ -42,3 +42,14 @@ Below is an example of what to run inside each of the three folders. The example
 ```
 
 Once this is finished place the files in a directory named ```results/```.
+
+The steps for hybrid and centralised concepts are the same. Just change the first line to:
+
+```shell
+> for f in *.log; do mv "$f" "centralised_${f/_2022*./.}"; done
+```
+or
+
+```shell
+> for f in *.log; do mv "$f" "hybrid_${f/_2022*./.}"; done
+```
