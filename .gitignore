@@ -2,3 +2,5 @@ results/*
 
 *.gpkg
 *.pyc
+*.gpkg-shm
+*.gpkg-wal
