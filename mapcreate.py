@@ -96,7 +96,7 @@ def kde_qgis(gpkg_name, processing):
 
     # set the input parameters
     decay = 0
-    kernel_algorithm = 0 # 3 is default
+    kernel_algorithm = 3 # 3 is default
     output_value = 0
     pixel_size = 2
     radius = 150
