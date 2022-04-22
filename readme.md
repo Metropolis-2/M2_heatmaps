@@ -6,14 +6,14 @@ All files were then placed in the same directory.
 Usage:
 
 ```shell
-python heatmap.py --logtype REGLOG --concept decentral --density very_low --mix 40 --uncertainty none
+python main.py --logtype REGLOG --concept decentral --density very_low --mix 40 --uncertainty none
 ```
 This creates heatmaps for REGLOG of the decentralised concept for very_low densities with a mix of 40 and no uncertainities.
 
 Run the following for more information:
 
 ```shell
-python heatmap.py --help
+python main.py --help
 ```
 
 The code requires ```PYQGIS```. 
