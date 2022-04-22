@@ -1,6 +1,8 @@
 ''' BlueSky command-line argument parsing. '''
 import argparse
 from cmath import log
+from itertools import combinations, product
+from rich.pretty import pprint
 
 
 def parse():
@@ -69,21 +71,38 @@ def parse():
         mix_filter = list(mix_set - set(args['mix']))
     
     # Uncertainty is a special case so create a deterministc filter
+    # and also the file combinations depends on the uncertainty
+    # For future reference, adding uncertainty to the file name should also include
+    # a name for when there is no uncertainty
     if args['uncertainty'] == ['none']:
         args['deterministic'] = True
         uncertainty_filter = list(uncertainty_set)
+
+        # make combinations
+        args['combinations'] = list(product(args['logtype'], args['concept'], args['density'], args['mix']))
     
     elif args['uncertainty'] == 'all' or args['uncertainty'] == ['all']:
         args['uncertainty'] = ['wind', 'rogue']
         args['deterministic'] = True
         uncertainty_filter = []
+
+        # make the combinations of the outputs
+        deterministic_comb = list(product(args['logtype'], args['concept'], args['density'], args['mix']))
+        uncertain_comb =  list(product(args['logtype'], args['concept'], args['density'], args['mix'], args['uncertainty']))
+
+        # join combinations
+        args['combinations'] = deterministic_comb + uncertain_comb
+
     else:
-        
         args['deterministic'] = False
         uncertainty_filter = list(uncertainty_set - set(args['uncertainty']))
 
+        # make the combinations of the outputs
+        args['combinations'] =  list(product(args['logtype'], args['concept'], args['density'], args['mix'], args['uncertainty']))
+        
     # join filters
     args['filters'] = concept_filter + logtype_filter + density_filter + mix_filter + uncertainty_filter
+
 
     return args
 

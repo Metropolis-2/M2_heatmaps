@@ -12,34 +12,37 @@ import numpy as np
 ################## STEP 1: Parse command line arguments ######################
 # filter the arguments
 args = cmdargs.parse()
+dir_files = 'results'
 
 ################## STEP 2: Get list of files #################################
 
 # list the files in the results directory and do not choose files if any
 # filter appears in the file name.
 # also remove if it starts with '.'
-list_of_files = os.listdir('results')
+list_of_files = os.listdir(dir_files)
 list_of_files = [f for f in list_of_files if not f.startswith('.')]
 list_of_files = [f for f in list_of_files if not any(x in f for x in args['filters'])]
 
 # place them in order
 list_of_files.sort()
-# now check for deterministic filters
+
+# now check for deterministic filters and make the combinations
 if not args['deterministic']:
     list_of_files = [f for f in list_of_files if any(x in f for x in args['uncertainty'])]
 
+
 # %%
+
 
 ################## STEP 3: CHECK REGLOGS #####################################s
 
 if 'REGLOG' in args['logtype']:
 
-    # filter the files
-    dir_files = 'results'
+    # filter out any non reglog files
     reglog_files = [os.path.join(dir_files,f) for f in list_of_files if 'REGLOG' in f]
+
     # read the files and skip the first 9 rows
     header_columns = ['ACID','ALT','LATS','LONS']
-
     header_2 = ['ACID','ALT','LATS','LONS','scenario']
 
     # get the start date
