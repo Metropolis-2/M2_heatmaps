@@ -59,7 +59,11 @@ def map_create(args):
             # file_name
             scenario_list = ['_'.join(scn_comb[0:4]) + '_' + f'{i}_' + '_'.join(scn_comb[4:]) for i in range(9)]
         
-
+        # check if the .tif files exists and if yes continue
+        if os.path.isfile(f'geotif/{gpkg_name}.tif'):
+            pprint(f'{gpkg_name}.tif exists, skipping')
+            continue
+            
         # first create a spatial index
         spatial_index(gpkg_name, processing)
 

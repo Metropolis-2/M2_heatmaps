@@ -41,6 +41,11 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
 
                     # get the time
                     sec_sim = float(line.split(',')[0])
+
+                    # ignore anything larger than 5400
+                    if sec_sim > 5401:
+                        break
+                    
                     time_stamp = str(date + timedelta(seconds=sec_sim))
                     if header_id == 0:
                         # make a dictionary wth values for each header_column
