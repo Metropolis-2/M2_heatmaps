@@ -62,16 +62,25 @@ def parse():
 
         # make the combinations of the outputs
         deterministic_comb = list(product(args['concept'], args['logtype'], args['density'], args['mix']))
-        uncertain_comb =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], args['uncertainty']))
+        wind_comb =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], ['wind'], ['1', '3', '5']))
+        rogue_comb =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], ['rogue'], ['1', '2', '3']))
 
         # join combinations
-        args['combinations'] = deterministic_comb + uncertain_comb
+        args['combinations'] = deterministic_comb + wind_comb + rogue_comb
 
     else:
+        wind_comb = []
+        rogue_comb = []
+
+        if 'wind' in args['uncertainty']:
+            wind_comb =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], ['wind'], ['1', '3', '5']))
+
+        if 'rogue' in args['uncertainty']:
+            rogue_comb =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], ['rogue'], ['1', '2', '3']))
+
 
         # make the combinations of the outputs
-        args['combinations'] =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], args['uncertainty']))
-        
+        args['combinations'] =  wind_comb + rogue_comb
 
 
     return args

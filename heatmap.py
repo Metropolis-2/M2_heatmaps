@@ -21,13 +21,23 @@ dir_files = 'results'
 import re
 for scn_comb in args['combinations']:
 
-    # name of geopackage file
-    gpkg_name = '_'.join(scn_comb)
+    # get the filenames for this combination.
+    # determinsitc files have length 4, and uncertain files have length 6
+    if len(scn_comb) == 4:
+        # deterministic scenarios
+        # name of geopackage file
+        gpkg_name = '_'.join(scn_comb)
 
-    # file_name
-    file_name = gpkg_name + '_'
+        # file_names
+        scenario_lists = [gpkg_name + '_' + f'{i}' for i in range(9)]
 
-    scenario_lists = [file_name + f'{i}' for i in range(9)]
+    else:
+        # uncertain scenarios
+        # name of geopackage file
+        gpkg_name = '_'.join(scn_comb)
+
+        # file_name
+        scenario_lists = ['_'.join(scn_comb[0:4]) + '_' + f'{i}_' + '_'.join(scn_comb[4:]) for i in range(9)]
 
     pprint(scenario_lists)
 
