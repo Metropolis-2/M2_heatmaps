@@ -18,10 +18,10 @@ def parse():
     parser.add_argument('--logtype', nargs='+', default='all', 
                         help='Specify the logtype of the heatmap to be created. Options are: REGLOG, CONFLOG, LOSLOG, GEOLOG ,FLSTLOG, all')
 
-    # create arguments for --density it can have multiple arguments (bottom, low, medium, high, ultra, all)
+    # create arguments for --density it can have multiple arguments (very_low, low, medium, high, ultra, all)
     # note that very_low is the same as bottom. Changed the filename for filtering purposes.
     parser.add_argument('--density', nargs='+', default='all', 
-                        help='Specify the density of the heatmap to be created. Options are: verylow, low, medium, high ,ultra, all')
+                        help='Specify the density of the heatmap to be created. Options are: very_low, low, medium, high ,ultra, all')
 
    # create arguments for --mix it can have multiple arguments (40, 50, 60, all)
     parser.add_argument('--mix', nargs='+', default='all', 
