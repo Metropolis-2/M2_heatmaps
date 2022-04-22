@@ -25,7 +25,7 @@ The ```*.log``` files were named inside each folder from the Metropolis 2 [outpu
 Below is an example of what to run inside each of the three folders. The example is specific to ```Output_Decentralised``` directory
 ``` shell
 
-> for f in *.log; do echo mv "$f" "decentralised_${f/_2022*./.}"; done
+> for f in *.log; do mv "$f" "decentralised_${f/_2022*./.}"; done
 > for f in *.log; do mv "$f" "${f/Flight_intention/}"; done
 
 > rename 's/R1/rogue_1/' *R1*
