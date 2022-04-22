@@ -12,7 +12,7 @@ def parse():
     # create arguments for --concept it can have multiple arguments (centralised, hybrid, decentral) 
     # if none are specified then the default value is used [all]
     parser.add_argument('--concept', nargs='+', default='all', 
-                        help='Specify the concept of the heatmap to be created. Options are: centralised, hybrid, decentral, all')
+                        help='Specify the concept of the heatmap to be created. Options are: centralised, hybrid, decentralised, all')
 
     # create arguments for --logtype it can have multiple arguments (REGLOG, CONFLOG, LOSLOG, GEOLOG, FLSTLOG, all)
     parser.add_argument('--logtype', nargs='+', default='all', 
@@ -21,7 +21,7 @@ def parse():
     # create arguments for --density it can have multiple arguments (bottom, low, medium, high, ultra, all)
     # note that very_low is the same as bottom. Changed the filename for filtering purposes.
     parser.add_argument('--density', nargs='+', default='all', 
-                        help='Specify the density of the heatmap to be created. Options are: bottom, low, medium, high ,ultra, all')
+                        help='Specify the density of the heatmap to be created. Options are: verylow, low, medium, high ,ultra, all')
 
    # create arguments for --mix it can have multiple arguments (40, 50, 60, all)
     parser.add_argument('--mix', nargs='+', default='all', 

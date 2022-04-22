@@ -1,13 +1,11 @@
 # Metropolis 2 heat maps
 
-Note that we renamed ```very_low``` density to ```bottom``` for filtering purposes. Similarily, decentralised is called decentral.
-
-This only affects the code as the output images have the correct names.
+Note that we renamed ```very_low``` density to ```verylow``` for filtering purposes.
 
 Usage:
 
 ```shell
-python heatmap.py --logtype REGLOG --concept decentral --density bottom --mix 40 --uncertainty none
+python heatmap.py --logtype REGLOG --concept decentral --density verylow --mix 40 --uncertainty none
 ```
 This creates heatmaps for REGLOG of the decentralised concept for very_low densities with a mix of 40 and no uncertainities.
 
@@ -26,9 +24,9 @@ The ```*.log``` files were named inside each folder from the Metropolis 2 [outpu
 Below is an example of what to run inside each of the three folders. The example is specific to ```Output_Decentralised``` directory
 ``` shell
 
-> for f in *.log; do mv "$f" "decentral_${f/_2022*./.}"; done
+> for f in *.log; do mv "$f" "decentralised_${f/_2022*./.}"; done
 > for f in *.log; do mv "$f" "${f/Flight_intention/}"; done
-> rename 's/very_low/bottom/' *.log
+> rename 's/very_low/verylow/' *.log
 
 > rename 's/R1/rogue_1/' *R1*
 > rename 's/R2/rogue_2/' *R2*
