@@ -38,70 +38,40 @@ def parse():
     args = vars(cmdargs)
 
     # now check if the user has specified all the arguments
-    concept_set = {'centralised', 'hybrid', 'decentral'}
-    logtype_set = {'REGLOG', 'CONFLOG', 'LOSLOG', 'GEOLOG', 'FLSTLOG'}
-    density_set = {'bottom', 'low', 'medium', 'high', 'ultra'}
-    mix_set = {'40', '50', '60'}
-    uncertainty_set = {'wind', 'rogue'}
-
-    # All of these arguments don't have to be mutually exclusive
-
     if args['concept'] == 'all':
-        args['concept'] = list(concept_set)
-        concept_filter = []
-    else:
-        concept_filter = list(concept_set - set(args['concept']))
+        args['concept'] = ['centralised', 'hybrid', 'decentral']
     
     if args['logtype'] == 'all':
-        args['logtype'] = list(logtype_set)
-        logtype_filter = []
-    else:
-        logtype_filter = list(logtype_set - set(args['logtype']))
+        args['logtype'] = ['REGLOG', 'CONFLOG', 'LOSLOG', 'GEOLOG', 'FLSTLOG']
 
     if args['density'] == 'all':
-        args['density'] =list(density_set)
-        density_filter = []
-    else:
-        density_filter = list(density_set - set(args['density']))
+        args['density'] = ['bottom', 'low', 'medium', 'high', 'ultra']
 
     if args['mix'] == 'all':
-        args['mix'] = list(mix_set)
-        mix_filter = []
-    else:
-        mix_filter = list(mix_set - set(args['mix']))
-    
-    # Uncertainty is a special case so create a deterministc filter
-    # and also the file combinations depends on the uncertainty
-    # For future reference, adding uncertainty to the file name should also include
-    # a name for when there is no uncertainty
-    if args['uncertainty'] == ['none']:
-        args['deterministic'] = True
-        uncertainty_filter = list(uncertainty_set)
+        args['mix'] = ['40', '50', '60']
 
+    
+    # Uncertainty is a special case, do some stuff before creating combinations
+
+    if args['uncertainty'] == ['none']:
         # make combinations
-        args['combinations'] = list(product(args['logtype'], args['concept'], args['density'], args['mix']))
+        args['combinations'] = list(product(args['concept'], args['logtype'], args['density'], args['mix']))
     
     elif args['uncertainty'] == 'all' or args['uncertainty'] == ['all']:
         args['uncertainty'] = ['wind', 'rogue']
-        args['deterministic'] = True
-        uncertainty_filter = []
 
         # make the combinations of the outputs
-        deterministic_comb = list(product(args['logtype'], args['concept'], args['density'], args['mix']))
-        uncertain_comb =  list(product(args['logtype'], args['concept'], args['density'], args['mix'], args['uncertainty']))
+        deterministic_comb = list(product(args['concept'], args['logtype'], args['density'], args['mix']))
+        uncertain_comb =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], args['uncertainty']))
 
         # join combinations
         args['combinations'] = deterministic_comb + uncertain_comb
 
     else:
-        args['deterministic'] = False
-        uncertainty_filter = list(uncertainty_set - set(args['uncertainty']))
 
         # make the combinations of the outputs
-        args['combinations'] =  list(product(args['logtype'], args['concept'], args['density'], args['mix'], args['uncertainty']))
+        args['combinations'] =  list(product(args['concept'], args['logtype'], args['density'], args['mix'], args['uncertainty']))
         
-    # join filters
-    args['filters'] = concept_filter + logtype_filter + density_filter + mix_filter + uncertainty_filter
 
 
     return args
