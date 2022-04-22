@@ -4,3 +4,4 @@ results/*
 *.pyc
 *.gpkg-shm
 *.gpkg-wal
+*.tif

@@ -19,7 +19,6 @@ def parse():
                         help='Specify the logtype of the heatmap to be created. Options are: REGLOG, CONFLOG, LOSLOG, GEOLOG ,FLSTLOG, all')
 
     # create arguments for --density it can have multiple arguments (very_low, low, medium, high, ultra, all)
-    # note that very_low is the same as bottom. Changed the filename for filtering purposes.
     parser.add_argument('--density', nargs='+', default='all', 
                         help='Specify the density of the heatmap to be created. Options are: very_low, low, medium, high ,ultra, all')
 
@@ -31,6 +30,10 @@ def parse():
     parser.add_argument('--uncertainty', nargs='+', default='all', 
                         help='Specify the uncertainty of the heatmap to be created. Options are: rogue, wind, all, none')
 
+    # create arguments for --create it can have multiple arguments (maps, files, all)
+    parser.add_argument('--create', nargs='+', default='all', 
+                        help='Specify if code should create gpkg files or just output heatmaps. Options are: gpkgs, maps, all')
+
     # parse arguments
     cmdargs, _ = parser.parse_known_args()
 
@@ -38,6 +41,9 @@ def parse():
     args = vars(cmdargs)
 
     # now check if the user has specified all the arguments
+    if args['create'] == 'all':
+        args['create'] = ['gpkgs', 'maps']
+
     if args['concept'] == 'all':
         args['concept'] = ['centralised', 'hybrid', 'decentral']
     
@@ -45,7 +51,7 @@ def parse():
         args['logtype'] = ['REGLOG', 'CONFLOG', 'LOSLOG', 'GEOLOG', 'FLSTLOG']
 
     if args['density'] == 'all':
-        args['density'] = ['bottom', 'low', 'medium', 'high', 'ultra']
+        args['density'] = ['very_low', 'low', 'medium', 'high', 'ultra']
 
     if args['mix'] == 'all':
         args['mix'] = ['40', '50', '60']
