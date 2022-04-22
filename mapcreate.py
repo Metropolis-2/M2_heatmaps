@@ -131,7 +131,7 @@ def  do_gdalwarp(gpkg_name, processing, tmp_layer):
 
     # get inputs
     crs = QgsCoordinateReferenceSystem('EPSG:32633')
-    target_extent = QgsVectorLayer('total_airspace.gpkg').extent()
+    target_extent = QgsVectorLayer('other_data/total_airspace.gpkg').extent()
 
     input_dict = { 
             'DATA_TYPE' : 0, 
