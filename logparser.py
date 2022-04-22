@@ -1,5 +1,6 @@
 import os
 from rich.pretty import pprint
+from rich.progress import track
 import pandas as pd
 from datetime import timedelta, datetime
 from shapely.geometry import Point, MultiPoint
@@ -7,11 +8,38 @@ import geopandas as gpd
 import numpy as np
 
 
-def logparse(scenario_list, gpkg_name, gpkg_args):
+def logparse(args):
+    
+    for i in track(range(len(args['combinations'])), description="Processing..."):
+        scn_comb = args['combinations'][i]
+            
+        # get global parameters for current combination
+        gpkg_args = {'concept':scn_comb[0], 'logtype':scn_comb[1], 'density':scn_comb[2], 'mix':scn_comb[3]}
+
+        # get the filenames for this combination.
+        # determinsitc files have length 4, and uncertain files have length 6
+        if len(scn_comb) == 4:
+            # deterministic scenarios
+            # name of geopackage file
+            gpkg_name = '_'.join(scn_comb)
+
+            # file_names
+            scenario_list = [gpkg_name + '_' + f'{i}' for i in range(9)]
+
+        else:
+            # uncertain scenarios
+            # extend gpkg args
+            gpkg_args['uncertainty'] = scn_comb[4]
+            gpkg_args['uncertainty_level'] = scn_comb[5]
+            # name of geopackage file
+            gpkg_name = '_'.join(scn_comb)
+
+            # file_name
+            scenario_list = ['_'.join(scn_comb[0:4]) + '_' + f'{i}_' + '_'.join(scn_comb[4:]) for i in range(9)]
     
 
-    if gpkg_args['logtype'] == 'REGLOG':
-        reglog(scenario_list, gpkg_name, gpkg_args)
+        if gpkg_args['logtype'] == 'REGLOG':
+            reglog(scenario_list, gpkg_name, gpkg_args)
 
 
 def reglog(scenario_list, gpkg_name, gpkg_args):
@@ -45,7 +73,7 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
                     # ignore anything larger than 5400
                     if sec_sim > 5401:
                         break
-                    
+
                     time_stamp = str(date + timedelta(seconds=sec_sim))
                     if header_id == 0:
                         # make a dictionary wth values for each header_column
