@@ -63,16 +63,21 @@ def map_create(args):
         if os.path.isfile(f'geotif/{gpkg_name}.tif'):
             pprint(f'{gpkg_name}.tif exists, skipping')
             continue
+
+        try:
             
-        # first create a spatial index
-        spatial_index(gpkg_name, processing)
+            # first create a spatial index
+            spatial_index(gpkg_name, processing)
 
-        # run the kde algorithm
-        tmp_kernel = kde_qgis(gpkg_name, processing)
+            # run the kde algorithm
+            tmp_kernel = kde_qgis(gpkg_name, processing)
 
-        tmp_warp = do_gdalwarp(gpkg_name, processing, tmp_kernel)
+            tmp_warp = do_gdalwarp(gpkg_name, processing, tmp_kernel)
 
-        nobandcells(gpkg_name, processing, tmp_warp)
+            nobandcells(gpkg_name, processing, tmp_warp)
+        
+        except:
+            pprint(f'{gpkg_name} failed')
 
                 
     # exit qgis

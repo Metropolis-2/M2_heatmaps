@@ -71,7 +71,7 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
                     sec_sim = float(line.split(',')[0])
 
                     # ignore anything larger than 5400
-                    if sec_sim > 5401:
+                    if sec_sim > 5401 and 'decentralised' in gpkg_args['concept']:
                         break
 
                     time_stamp = str(date + timedelta(seconds=sec_sim))
