@@ -65,9 +65,14 @@ def map_create(args):
             continue
 
         try:
+            # convert multipart to singlepart
+            tmp_single = multi_to_single(gpkg_name, processing)            
             
-            # first create a spatial index
-            spatial_index(gpkg_name, processing)
+            # remove points outside the simulation area
+            tmp_clip = clip_spatial(gpkg_name, processing, tmp_single)
+
+            # create another spatial index for fun
+            spatial_index(gpkg_name, processing, tmp_clip)
 
             # run the kde algorithm
             tmp_kernel = kde_qgis(gpkg_name, processing)
@@ -75,7 +80,7 @@ def map_create(args):
             tmp_warp = do_gdalwarp(gpkg_name, processing, tmp_kernel)
 
             nobandcells(gpkg_name, processing, tmp_warp)
-        
+    
         except:
             pprint(f'{gpkg_name} failed')
 
@@ -83,15 +88,33 @@ def map_create(args):
     # exit qgis
     qgs.exitQgis()
 
-def spatial_index(gpkg_name, processing):
+def multi_to_single(gpkg_name, processing):
+    # set the input parameters
     layer_input = QgsVectorLayer(f"gpkgs/{gpkg_name}.gpkg")
     
     # set the input parameters
-    input_dict = {
-                    'INPUT' : layer_input
+    input_dict = { 
+                    'INPUT' : layer_input, 
+                    'OUTPUT' : 'TEMPORARY_OUTPUT'
                     }
 
-    if layer_input.hasSpatialIndex() == 2:
+
+    pprint(f'Creating singleparts {gpkg_name}')
+
+    # now do a dissolve on this
+    tmp_single = processing.run("native:multiparttosingleparts",
+                    input_dict)
+
+    return tmp_single['OUTPUT']
+
+def spatial_index(gpkg_name, processing, tmp_layer):
+    
+    # set the input parameters
+    input_dict = {
+                    'INPUT' : tmp_layer
+                    }
+
+    if tmp_layer.hasSpatialIndex() == 2:
         pprint(f'{gpkg_name} has a spatial index' )
         return
 
@@ -99,21 +122,73 @@ def spatial_index(gpkg_name, processing):
 
     # now do a dissolve on this
     processing.run("native:createspatialindex",
+                        input_dict)
+
+    return 
+
+def clip_spatial(gpkg_name, processing, tmp_layer):
+    # set the input parameters
+    input_dict = { 
+                    'INPUT' : tmp_layer, 
+                    'OUTPUT' : 'TEMPORARY_OUTPUT',
+                    'OVERLAY' : QgsVectorLayer('other_data/total_airspace.gpkg')
+                    }
+
+    pprint(f'Clipping {gpkg_name}')
+    
+    tmp_clip = processing.run("qgis:clip",
                     input_dict)
+
+    # delete fid column
+    input_dict = { 
+                    'INPUT' : tmp_clip['OUTPUT'], 
+                    'OUTPUT' : 'TEMPORARY_OUTPUT',
+                    'COLUMN' : 'fid'
+                    }
+    output_1 = processing.run('native:deletecolumn', 
+                             input_dict)
+
+    # add an index to the clipped layer
+    input_dict ={ 
+        'FIELD_NAME' : 'fid', 
+        'GROUP_FIELDS' : [], 
+        'INPUT' : output_1['OUTPUT'], 
+        'MODULUS' : 0,
+        'OUTPUT' : f'tmp/{gpkg_name}.gpkg', 
+        'SORT_ASCENDING' : True, 
+        'SORT_EXPRESSION' : '', 
+        'SORT_NULLS_FIRST' : False, 
+        'START' : 1 
+        }
+
+    processing.run("native:addautoincrementalfield",
+                    input_dict)
+    
+    return QgsVectorLayer(f'tmp/{gpkg_name}.gpkg')
 
 def kde_qgis(gpkg_name, processing):
 
     # set the input parameters
+    tmp_layer =  QgsVectorLayer(f'tmp/{gpkg_name}.gpkg')
     decay = 0
     kernel_algorithm = 3 # 3 is default
     output_value = 0
     pixel_size = 2
     radius = 150
-    layer_input = QgsVectorLayer(f"gpkgs/{gpkg_name}.gpkg")
 
+    # if tmp_layer.hasSpatialIndex() == 2:
+    #     pprint(f'{gpkg_name} has a spatial index' )
+    # else:
+    #     pprint(f'Creating a spatial index for {gpkg_name}')
+    #     # create a spatial index
+    #     processing.run("native:createspatialindex",
+    #                     {
+    #                     'INPUT' : tmp_layer
+    #                     })
+    # KDE
     input_dict = {
                     'DECAY' : decay, 
-                    'INPUT' : layer_input, 
+                    'INPUT' : tmp_layer, 
                     'KERNEL' : kernel_algorithm, 
                     'OUTPUT' : 'TEMPORARY_OUTPUT', 
                     'OUTPUT_VALUE' : output_value, 
