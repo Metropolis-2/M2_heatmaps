@@ -5,3 +5,4 @@ results/*
 *.gpkg-shm
 *.gpkg-wal
 *.tif
+*.pdf
