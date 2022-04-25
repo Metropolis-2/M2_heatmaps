@@ -4,13 +4,13 @@
 import os
 
 # image directory
-image_dir = "/Users/localadmin/Desktop/andresmorfin/M2_heatmaps/images"
+image_dir = "/Users/andresmorfin/Desktop/M2/m2_heat_maps/images"
 
 # get the style file
-style_dir = '/Users/localadmin/Desktop/andresmorfin/M2_heatmaps/styles'
+style_dir = '/Users/andresmorfin/Desktop/M2/m2_heat_maps/styles'
 
 # get the geotiff directory and list the contents (remove hidden files)
-geotiff_dir = '/Users/localadmin/Desktop/andresmorfin/M2_heatmaps/geotif'
+geotiff_dir = '/Users/andresmorfin/Desktop/M2/m2_heat_maps/geotif'
 geotiff_files = os.listdir(geotiff_dir)
 geotiff_files = [f for f in geotiff_files if not f.startswith('.')]
 
