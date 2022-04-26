@@ -1,24 +1,25 @@
 
-### run code inside qgis console for ease of use
-
+### run code inside QGIS python console for ease of use
 import os
 
+# directores where data is stored
 # image directory
 image_dir = "/Users/andresmorfin/Desktop/M2/m2_heat_maps/images"
 
 # get the style file
 style_dir = '/Users/andresmorfin/Desktop/M2/m2_heat_maps/styles'
 
-# get the geotiff directory and list the contents (remove hidden files)
+# geotiff directory
 geotiff_dir = '/Users/andresmorfin/Desktop/M2/m2_heat_maps/geotif'
+
+# list the contents (remove hidden files)
 geotiff_files = os.listdir(geotiff_dir)
 geotiff_files = [f for f in geotiff_files if not f.startswith('.')]
-
 
 # acces qgis project
 project = QgsProject.instance()
 
-
+#  loop through geotiff files and export
 for geo_tif in geotiff_files:
     # get the raster layer path
     rasterlayer_path = os.path.join(geotiff_dir, geo_tif)

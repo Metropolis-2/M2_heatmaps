@@ -32,7 +32,7 @@ def parse():
 
     # create arguments for --create it can have multiple arguments (maps, files, all)
     parser.add_argument('--create', nargs='+', default='all', 
-                        help='Specify if code should create gpkg files or just output heatmaps. Options are: gpkgs, maps, all')
+                        help='Specify if code should create gpkg files or just output heatmaps. Options are: gpkgs, geotifs, images, all')
 
     # parse arguments
     cmdargs, _ = parser.parse_known_args()
@@ -42,7 +42,7 @@ def parse():
 
     # now check if the user has specified all the arguments
     if args['create'] == 'all':
-        args['create'] = ['gpkgs', 'maps']
+        args['create'] = ['gpkgs', 'geotifs', 'images']
 
     if args['concept'] == 'all':
         args['concept'] = ['centralised', 'hybrid', 'decentral']
