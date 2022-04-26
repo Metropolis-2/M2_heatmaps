@@ -61,7 +61,7 @@ def tif_create(args):
         
         # check if the .tif files exists and if yes continue
         if os.path.isfile(f'geotif/{gpkg_name}.tif'):
-            pprint(f'{gpkg_name}.tif exists, skipping')
+            pprint(f'geotif/{gpkg_name}.tif exists, skipping')
             continue
 
         try:
@@ -80,9 +80,13 @@ def tif_create(args):
             tmp_warp = do_gdalwarp(gpkg_name, processing, tmp_kernel)
 
             nobandcells(gpkg_name, processing, tmp_warp)
-    
+
+        except KeyboardInterrupt:
+            quit()
+
         except:
             pprint(f'{gpkg_name} failed')
+
 
                 
     # exit qgis
