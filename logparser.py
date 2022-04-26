@@ -39,6 +39,11 @@ def logparse(args):
     
 
         if gpkg_args['logtype'] == 'REGLOG':
+            # check if the file exists
+            if os.path.exists(os.path.join('gpkgs', gpkg_name + '.gpkg')):
+                pprint(f'{gpkg_name} already exists')
+                continue
+
             reglog(scenario_list, gpkg_name, gpkg_args)
 
 
@@ -53,6 +58,9 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
 
     # get the start date
     data = {}
+
+    # each time stamp should have four entries
+    time_stamp_entries = dict()
 
     pprint(f'Reading {gpkg_name}')
     try:
@@ -69,11 +77,6 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
 
                     # get the time
                     sec_sim = float(line.split(',')[0])
-
-                    # ignore anything larger than 5400
-                    if sec_sim > 5401 and 'decentralised' in gpkg_args['concept']:
-                        break
-
                     time_stamp = str(date + timedelta(seconds=sec_sim))
                     if header_id == 0:
                         # make a dictionary wth values for each header_column
@@ -84,9 +87,18 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
                     else:
                         data[time_stamp][header_columns[header_id]] = [float(i) for i in line.strip('\n').split(',')[1:]]
 
-        
+                    
+                    # create a check to see if the data is complete.
+                    time_stamp_entries[time_stamp] = time_stamp_entries.get(time_stamp, 0) + 1
+
+        # get a dataframe of the entries
+        df_time_entries = pd.DataFrame(time_stamp_entries, index=['count']).T
+
         # convert to pandas dataframe where the index is the data keys and the columns are the header columns
         df = pd.DataFrame(data).T
+
+        # remove entries from df that have a value less than 4 in the df_time_entries
+        df = df[df_time_entries['count'] >= 4]
 
         multi_point = np.array([MultiPoint(np.column_stack((x, y))) for x,y in zip(df['LONS'], df['LATS'])], dtype=MultiPoint)
 
@@ -108,7 +120,7 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
         # convert to a geopackage
         gpkg_fpath = os.path.join('gpkgs', gpkg_name)
         gdf.to_file(gpkg_fpath + '.gpkg', driver='GPKG')
-    
+
     except ValueError:
         pprint('Problem with these files:')
         pprint(scenario_list)
