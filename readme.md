@@ -6,7 +6,7 @@ All files were then placed in the same directory.
 GeneralUsage:
 
 ```shell
-python main.py --logtype REGLOG --concept decentral --density very_low --mix 40 --uncertainty none --create gpkgs
+python main.py --logtype REGLOG --concept decentralised --density very_low --mix 40 --uncertainty none --create gpkgs
 ```
 This creates the geopackage files for REGLOG of the decentralised concept for very_low densities with a mix of 40 and no uncertainities.
 
@@ -62,17 +62,17 @@ or
 This step creates the vector data that is used for Step 2.
 
 ```shell
-python main.py --logtype REGLOG --concept decentral --density very_low --mix 40 --uncertainty none --create gpkgs
+python main.py --logtype REGLOG --concept decentralised --density very_low --mix 40 --uncertainty none --create gpkgs
 ```
 
 ## Step 2: Creating the raster data
 
-To generate the raster files, ```*.geotif```, a pyqgis environment is needed. See [here](https://github.com/conda-forge/qgis-feedstock) for more information. After installing qgis, add the path to the executable in line 11 of ```geotifcreate.py```.
+To generate the raster files, ```*.geotif```, a pyqgis environment is needed. See [here](https://github.com/conda-forge/qgis-feedstock) for more information. After installing qgis, add the path to the executable in [line 11](https://github.com/Metropolis-2/M2_heatmaps/blob/2532329a603c1997adf42603b1b4af2f8e6e09ae/geotifcreate.py#L11) of ```geotifcreate.py```.
 
 Here is an example used to create the geotifs,
 
 ```shell
-python main.py --logtype REGLOG --concept decentral --density very_low --mix 40 --uncertainty none --create geotifs
+python main.py --logtype REGLOG --concept decentralised --density very_low --mix 40 --uncertainty none --create geotifs
 ```
 
 ## Step 3: Generating the heatmaps
