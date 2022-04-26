@@ -1,13 +1,7 @@
 # %%
-import os
 import cmdargs
 from rich.pretty import pprint
-from rich.progress import track
-import pandas as pd
-from datetime import timedelta, datetime
-from shapely.geometry import Point, MultiPoint
-import geopandas as gpd
-import numpy as np
+
 import logparser as logp
 import geotifcreate as gtfc
 
