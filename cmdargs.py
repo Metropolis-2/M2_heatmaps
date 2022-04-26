@@ -9,7 +9,7 @@ def parse():
     parser = argparse.ArgumentParser(prog="heatmaps", description="Create heatmaps from BlueSky flight data.")
 
 
-    # create arguments for --concept it can have multiple arguments (centralised, hybrid, decentral) 
+    # create arguments for --concept it can have multiple arguments (centralised, hybrid, decentralised)) 
     # if none are specified then the default value is used [all]
     parser.add_argument('--concept', nargs='+', default='all', 
                         help='Specify the concept of the heatmap to be created. Options are: centralised, hybrid, decentralised, all')
@@ -45,7 +45,7 @@ def parse():
         args['create'] = ['gpkgs', 'geotifs', 'images']
 
     if args['concept'] == 'all':
-        args['concept'] = ['centralised', 'hybrid', 'decentral']
+        args['concept'] = ['centralised', 'hybrid', 'decentralised']
     
     if args['logtype'] == 'all':
         args['logtype'] = ['REGLOG', 'CONFLOG', 'LOSLOG', 'GEOLOG', 'FLSTLOG']

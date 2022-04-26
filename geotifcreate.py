@@ -7,14 +7,14 @@ import geopandas as gpd
 import numpy as np
 from rich.progress import track
 
-
+# Enter the path for qgis excutable
 qgis_path = '/usr/local/Caskroom/miniconda/base/envs/qgis/lib/qgis'
 
 from qgis.core import QgsApplication
 from qgis.core import QgsVectorLayer, QgsCoordinateReferenceSystem, QgsField
 from qgis.core.additions.edit import edit
 
-def map_create(args):
+def tif_create(args):
 
     # Supply path to qgis install location
     QgsApplication.setPrefixPath(qgis_path, True)

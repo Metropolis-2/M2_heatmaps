@@ -41,7 +41,7 @@ def logparse(args):
         if gpkg_args['logtype'] == 'REGLOG':
             # check if the file exists
             if os.path.exists(os.path.join('gpkgs', gpkg_name + '.gpkg')):
-                pprint(f'{gpkg_name} already exists')
+                pprint(f'gpkgs/{gpkg_name}.gpkg already exists')
                 continue
 
             reglog(scenario_list, gpkg_name, gpkg_args)

@@ -1,8 +1,13 @@
+# don't upload M2results to github
 results/*
 
-*.gpkg
+# don't upload processed info to github
+gpkgs/*.gpkg
+tmp/*.gpkg
+geotif/*.tif
+images/*.pdf
+
+# generic files to ignore
 *.pyc
 *.gpkg-shm
 *.gpkg-wal
-*.tif
-*.pdf

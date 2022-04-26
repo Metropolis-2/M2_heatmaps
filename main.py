@@ -9,7 +9,7 @@ from shapely.geometry import Point, MultiPoint
 import geopandas as gpd
 import numpy as np
 import logparser as logp
-import mapcreate as mapc
+import geotifcreate as gtfc
 
 ################## STEP 1: Parse command line arguments ######################
 # filter the arguments
@@ -26,7 +26,7 @@ if 'gpkgs' in args['create']:
 ################## STEP 3: CREATE GEOTIFS #####################################
 if 'geotifs' in args['create']:
     # create the maps
-    mapc.map_create(args)
+    gtfc.tif_create(args)
  
 ################## STEP 3: CREATE IMAGES #####################################
 if 'images' in args['create']:
