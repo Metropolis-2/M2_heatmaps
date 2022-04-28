@@ -59,6 +59,15 @@ def logparse(args):
 
             conflog(scenario_list, gpkg_name, gpkg_args)
 
+        if gpkg_args['logtype'] == 'LOSLOG':
+            # check if the file exists
+            if os.path.exists(os.path.join('gpkgs', gpkg_name + '.gpkg')):
+                print(f'[bright_black]gpkgs/{gpkg_name}.gpkg already exists, skipping.')
+                continue
+
+            loslog(scenario_list, gpkg_name, gpkg_args)
+
+
 
 def reglog(scenario_list, gpkg_name, gpkg_args):
 
@@ -155,6 +164,39 @@ def conflog(scenario_list, gpkg_name, gpkg_args):
         
         # convert time to datetime
         df['time'] = pd.to_datetime(df['time'], unit='s', errors='coerce')
+
+        # convert coords to numpy array
+        # convert to geodataframe
+        gdf = gpd.GeoDataFrame(df, geometry=df.apply(lambda row: MultiPoint([(row['LON1'], row['LAT1']), (row['LON2'], row['LAT2'])]), axis=1), crs='epsg:4326')    
+
+        # convert to epsg 32633
+        gdf = gdf.to_crs(epsg=32633)
+
+        # convert to a geopackage
+        gpkg_fpath = os.path.join('gpkgs', gpkg_name)
+        gdf.to_file(gpkg_fpath + '.gpkg', driver='GPKG')
+
+    except ValueError:
+        print('[red]Problem with these files:')
+        print(scenario_list)
+
+
+def loslog(scenario_list, gpkg_name, gpkg_args):
+
+    # filter out any non reglog files
+    loslog_files = [os.path.join('results',f) + '.log' for f in scenario_list if 'CONFLOG' in f]
+
+    # read the files and skip the first 9 rows
+    header_columns = ['exittime','starttime','timemindist','ACID1','ACID2','LAT1','LON1','ALT1','LAT2','LON2','ALT2','DIST']
+
+    print(f'[green]Parsing {gpkg_name}...')
+    try:
+
+        # place all logs in a dataframe
+        df = pd.concat((pd.read_csv(f, skiprows=9, header=None, names=header_columns).assign(scenario = f[8:-4]) for f in loslog_files))
+        
+        # convert time to datetime
+        df['timemindist'] = pd.to_datetime(df['timemindist'], unit='s', errors='coerce')
 
         # convert coords to numpy array
         # convert to geodataframe
