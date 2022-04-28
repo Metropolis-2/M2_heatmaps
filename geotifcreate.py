@@ -119,7 +119,7 @@ def spatial_index(gpkg_name, processing, tmp_layer):
                     }
 
     if tmp_layer.hasSpatialIndex() == 2:
-        print(f'{gpkg_name} has a spatial index' )
+        print(f'[bright_black]{gpkg_name} has a spatial index' )
         return
 
     print(f'[green]Creating a spatial index for {gpkg_name}')
