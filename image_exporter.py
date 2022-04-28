@@ -28,8 +28,12 @@ for geo_tif in geotiff_files:
     current_density = geo_tif.split('_')[2]
     if current_density == 'very':
         current_density = 'very_low'
+
+    # logtype
+    log_type = geo_tif.split('_')[1]
     
-    style_path = os.path.join(style_dir, f'{current_density}.qml')
+    # find style path
+    style_path = os.path.join(style_dir, f'{log_type}_{current_density}.qml')
 
     # load the layer into the project amd give it a style
     layer = QgsRasterLayer(rasterlayer_path)
