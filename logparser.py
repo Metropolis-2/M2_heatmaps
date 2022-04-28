@@ -4,8 +4,13 @@ from rich.progress import track
 import pandas as pd
 from datetime import timedelta, datetime
 from shapely.geometry import Point, MultiPoint
+import functools
 import geopandas as gpd
 import numpy as np
+
+# ignore warnings with the way the gdf is created
+import warnings
+warnings.filterwarnings('ignore')
 
 
 def logparse(args):
@@ -49,7 +54,7 @@ def logparse(args):
         if gpkg_args['logtype'] == 'CONFLOG':
             # check if the file exists
             if os.path.exists(os.path.join('gpkgs', gpkg_name + '.gpkg')):
-                print(f'gpkgs/{gpkg_name}.gpkg already exists, skipping')
+                print(f'[bright_black]gpkgs/{gpkg_name}.gpkg already exists, skipping.')
                 continue
 
             conflog(scenario_list, gpkg_name, gpkg_args)
@@ -70,7 +75,7 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
     # each time stamp should have four entries
     time_stamp_entries = dict()
 
-    print(f'[green]Parsing {gpkg_name}.log')
+    print(f'[green]Parsing {gpkg_name}')
     try:
 
         for idx, filepath in enumerate(reglog_files):
@@ -137,69 +142,23 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
 def conflog(scenario_list, gpkg_name, gpkg_args):
 
     # filter out any non reglog files
-    conflog_files = [os.path.join('results',f) + '.log' for f in scenario_list if 'REGLOG' in f]
-    
+    conflog_files = [os.path.join('results',f) + '.log' for f in scenario_list if 'CONFLOG' in f]
+
     # read the files and skip the first 9 rows
-    header_columns = ['ACID','ALT','LATS','LONS']
-    header_2 = ['ACID','ALT','LATS','LONS','scenario']
+    header_columns = ['time','ACID1','ACID2','LAT1','LON1','ALT1','LAT2','LON2','ALT2','CPALAT','CPALON']
 
-    # get the start date
-    data = {}
-
-    # each time stamp should have four entries
-    time_stamp_entries = dict()
-
-    print(f'[green]Parsing {gpkg_name}.log')
+    print(f'[green]Parsing {gpkg_name}...')
     try:
 
-        for idx, filepath in enumerate(conflog_files):
-            day = idx + 1
-            date = datetime.strptime(f'2022-01-{day}',"%Y-%m-%d")
+        # place all logs in a dataframe
+        df = pd.concat((pd.read_csv(f, skiprows=9, header=None, names=header_columns).assign(scenario = f[8:-4]) for f in conflog_files))
+        
+        # convert time to datetime
+        df['time'] = pd.to_datetime(df['time'], unit='s', errors='coerce')
 
-            with open(filepath) as f:
-                for line_num, line in enumerate(f):
-                    if line_num < 9:
-                        continue
-                    header_id = (line_num - 9) % 4
-
-                    # get the time
-                    sec_sim = float(line.split(',')[0])
-                    time_stamp = str(date + timedelta(seconds=sec_sim))
-                    if header_id == 0:
-                        # make a dictionary wth values for each header_column
-                        data[time_stamp] = {header_col:[] for header_col in header_2}            
-                        data[time_stamp][header_columns[header_id]] = line.strip('\n').split(',')[1:]
-                        data[time_stamp]['scenario'] = filepath[len('results')+1:] 
-
-                    else:
-                        data[time_stamp][header_columns[header_id]] = [float(i) for i in line.strip('\n').split(',')[1:]]
-
-                    
-                    # create a check to see if the data is complete.
-                    time_stamp_entries[time_stamp] = time_stamp_entries.get(time_stamp, 0) + 1
-
-        # get a dataframe of the entries
-        df_time_entries = pd.DataFrame(time_stamp_entries, index=['count']).T
-
-        # convert to pandas dataframe where the index is the data keys and the columns are the header columns
-        df = pd.DataFrame(data).T
-
-        # remove entries from df that have a value less than 4 in the df_time_entries
-        df = df[df_time_entries['count'] >= 4]
-
-        multi_point = np.array([MultiPoint(np.column_stack((x, y))) for x,y in zip(df['LONS'], df['LATS'])], dtype=MultiPoint)
-
-        # remove ACID, LAT, LON, ALT columns
-        df.drop(columns=['ACID','LATS', 'LONS', 'ALT'], inplace=True)
-        # make a geodataframe from the pandas dataframe
-        gdf = gpd.GeoDataFrame(df, geometry=multi_point, crs='epsg:4326')
-
-        # set the index as a column
-        gdf['date'] = gdf.index
-        gdf['date']= pd.to_datetime(gdf['date'])
-
-        # reset index
-        gdf.reset_index(inplace=True)
+        # convert coords to numpy array
+        # convert to geodataframe
+        gdf = gpd.GeoDataFrame(df, geometry=df.apply(lambda row: MultiPoint([(row['LON1'], row['LAT1']), (row['LON2'], row['LAT2'])]), axis=1), crs='epsg:4326')    
 
         # convert to epsg 32633
         gdf = gdf.to_crs(epsg=32633)
@@ -209,5 +168,5 @@ def conflog(scenario_list, gpkg_name, gpkg_args):
         gdf.to_file(gpkg_fpath + '.gpkg', driver='GPKG')
 
     except ValueError:
-        pprint('Problem with these files:')
-        pprint(scenario_list)
+        print('[red]Problem with these files:')
+        print(scenario_list)
