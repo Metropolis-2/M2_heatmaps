@@ -1,6 +1,6 @@
 # %%
 import cmdargs
-from rich.pretty import pprint
+from rich import print
 
 import logparser as logp
 import geotifcreate as gtfc
@@ -27,4 +27,4 @@ if 'images' in args['create']:
     # for now, image_exporter should be run from inside QGIS python console.
     # This is just because it has a bunch of QGIS imports so it is easier to run
     # from QGIS
-    pprint('Please run image_exporter.py from QGIS python console')
+    print('Please run image_exporter.py from QGIS python console')

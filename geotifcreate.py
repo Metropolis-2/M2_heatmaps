@@ -1,5 +1,5 @@
 import os
-from rich.pretty import pprint
+from rich import print
 import pandas as pd
 from datetime import timedelta, datetime
 from shapely.geometry import Point, MultiPoint
@@ -61,7 +61,7 @@ def tif_create(args):
         
         # check if the .tif files exists and if yes continue
         if os.path.isfile(f'geotif/{gpkg_name}.tif'):
-            pprint(f'geotif/{gpkg_name}.tif exists, skipping')
+            print(f'[bright_black]geotif/{gpkg_name}.tif exists, skipping')
             continue
 
         try:
@@ -85,7 +85,7 @@ def tif_create(args):
             quit()
 
         except:
-            pprint(f'{gpkg_name} failed')
+            print(f'[red]{gpkg_name} failed')
 
 
                 
@@ -103,7 +103,7 @@ def multi_to_single(gpkg_name, processing):
                     }
 
 
-    pprint(f'Creating singleparts {gpkg_name}')
+    print(f'[green]Creating singleparts {gpkg_name}')
 
     # now do a dissolve on this
     tmp_single = processing.run("native:multiparttosingleparts",
@@ -119,10 +119,10 @@ def spatial_index(gpkg_name, processing, tmp_layer):
                     }
 
     if tmp_layer.hasSpatialIndex() == 2:
-        pprint(f'{gpkg_name} has a spatial index' )
+        print(f'{gpkg_name} has a spatial index' )
         return
 
-    pprint(f'Creating a spatial index for {gpkg_name}')
+    print(f'[green]Creating a spatial index for {gpkg_name}')
 
     # now do a dissolve on this
     processing.run("native:createspatialindex",
@@ -138,7 +138,7 @@ def clip_spatial(gpkg_name, processing, tmp_layer):
                     'OVERLAY' : QgsVectorLayer('other_data/total_airspace.gpkg')
                     }
 
-    pprint(f'Clipping {gpkg_name}')
+    print(f'[green]Clipping {gpkg_name}')
     
     tmp_clip = processing.run("qgis:clip",
                     input_dict)
@@ -180,16 +180,6 @@ def kde_qgis(gpkg_name, processing):
     pixel_size = 2
     radius = 150
 
-    # if tmp_layer.hasSpatialIndex() == 2:
-    #     pprint(f'{gpkg_name} has a spatial index' )
-    # else:
-    #     pprint(f'Creating a spatial index for {gpkg_name}')
-    #     # create a spatial index
-    #     processing.run("native:createspatialindex",
-    #                     {
-    #                     'INPUT' : tmp_layer
-    #                     })
-    # KDE
     input_dict = {
                     'DECAY' : decay, 
                     'INPUT' : tmp_layer, 
@@ -203,7 +193,7 @@ def kde_qgis(gpkg_name, processing):
                 }
 
     
-    pprint(f'Running kde algorithm for {gpkg_name}')
+    print(f'[green]Running kde algorithm for {gpkg_name}')
     # run algorithm
     tmp_kernel = processing.run("qgis:heatmapkerneldensityestimation",
                                 input_dict)
@@ -233,7 +223,7 @@ def  do_gdalwarp(gpkg_name, processing, tmp_layer):
             'TARGET_RESOLUTION' : None 
             }
 
-    pprint(f'Running gdalwarp for {gpkg_name}')
+    print(f'[green]Running gdalwarp for {gpkg_name}')
     # run algorithm
     tmp_warp = processing.run("gdal:warpreproject",
                                 input_dict)

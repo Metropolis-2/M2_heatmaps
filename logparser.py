@@ -1,5 +1,5 @@
 import os
-from rich.pretty import pprint
+from rich import print
 from rich.progress import track
 import pandas as pd
 from datetime import timedelta, datetime
@@ -41,7 +41,7 @@ def logparse(args):
         if gpkg_args['logtype'] == 'REGLOG':
             # check if the file exists
             if os.path.exists(os.path.join('gpkgs', gpkg_name + '.gpkg')):
-                pprint(f'gpkgs/{gpkg_name}.gpkg already exists')
+                print(f'[bright_black]gpkgs/{gpkg_name}.gpkg already exists, skipping.')
                 continue
 
             reglog(scenario_list, gpkg_name, gpkg_args)
@@ -49,7 +49,7 @@ def logparse(args):
         if gpkg_args['logtype'] == 'CONFLOG':
             # check if the file exists
             if os.path.exists(os.path.join('gpkgs', gpkg_name + '.gpkg')):
-                pprint(f'gpkgs/{gpkg_name}.gpkg already exists')
+                print(f'gpkgs/{gpkg_name}.gpkg already exists, skipping')
                 continue
 
             conflog(scenario_list, gpkg_name, gpkg_args)
@@ -70,7 +70,7 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
     # each time stamp should have four entries
     time_stamp_entries = dict()
 
-    pprint(f'Reading {gpkg_name}')
+    print(f'[green]Parsing {gpkg_name}.log')
     try:
 
         for idx, filepath in enumerate(reglog_files):
@@ -130,8 +130,8 @@ def reglog(scenario_list, gpkg_name, gpkg_args):
         gdf.to_file(gpkg_fpath + '.gpkg', driver='GPKG')
 
     except ValueError:
-        pprint('Problem with these files:')
-        pprint(scenario_list)
+        print('[red]Problem with these files:')
+        print(scenario_list)
 
 
 def conflog(scenario_list, gpkg_name, gpkg_args):
@@ -149,7 +149,7 @@ def conflog(scenario_list, gpkg_name, gpkg_args):
     # each time stamp should have four entries
     time_stamp_entries = dict()
 
-    pprint(f'Reading {gpkg_name}')
+    print(f'[green]Parsing {gpkg_name}.log')
     try:
 
         for idx, filepath in enumerate(conflog_files):
