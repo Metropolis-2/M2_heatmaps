@@ -184,7 +184,7 @@ def conflog(scenario_list, gpkg_name, gpkg_args):
 def loslog(scenario_list, gpkg_name, gpkg_args):
 
     # filter out any non reglog files
-    loslog_files = [os.path.join('results',f) + '.log' for f in scenario_list if 'CONFLOG' in f]
+    loslog_files = [os.path.join('results',f) + '.log' for f in scenario_list if 'LOSLOG' in f]
 
     # read the files and skip the first 9 rows
     header_columns = ['exittime','starttime','timemindist','ACID1','ACID2','LAT1','LON1','ALT1','LAT2','LON2','ALT2','DIST']
