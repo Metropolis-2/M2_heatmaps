@@ -1,7 +1,7 @@
-# Metropolis 2 heat maps
+# Metropolis 2 heat maps for conflicts, intrusions, and density.
 
 Note that we renamed the files by adding the concept to the front of the file and are using full words for the wind and rogue. And also separating the uncertaintiy level with an underscore. We removed anything related to the date of the simulation. Aso removed ```Flight_intention```.
-All files were then placed in the same directory.
+All files were then placed in the same directory. The code runs with ```LOSLOG```, ```REGLOG```, and ```CONFLOG```.
 
 GeneralUsage:
 
@@ -27,9 +27,14 @@ Ensure that the following directories exist prior to running the code.
 
 
 ### RUN THIS IN SHELL FOR RENAMING
-The ```*.log``` files were named inside each folder from the Metropolis 2 [output](https://data.4tu.nl/articles/dataset/Simulation_dataset_for_research_project_Metropolis_2/19323263).
+The ```*.log``` files were renamed inside each folder from the Metropolis 2 [output](https://data.4tu.nl/articles/dataset/Simulation_dataset_for_research_project_Metropolis_2/19323263).
+
+The names should be ```{CONCEPT}_{LOGNAME}_{DENSITY}_{MIX}_{REPITITON}_{UNCERTAINTY_TYPE}_{UNCERTAINTY_LEVEL}.log```, an example is ```hybrid_REGLOG_very_low_40_8_rogue_2.log``` or ```centralised_LOSLOG_low_50_8.log```.
 
 Below is an example of what to run inside each of the three folders. The example is specific to ```Output_Decentralised``` directory
+
+
+
 ``` shell
 
 > for f in *.log; do mv "$f" "decentralised_${f/_2022*./.}"; done
