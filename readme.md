@@ -70,6 +70,13 @@ This step creates the vector data that is used for Step 2.
 python main.py --logtype REGLOG --concept decentralised --density very_low --mix 40 --uncertainty none --create gpkgs
 ```
 
+Ensure that the following directory is created,
+
+``` python
+# gpkgs directory
+gpkg_dir = "/[ABSOLUTE PATH TO HEATMAP REPO]/gpkgs"
+```
+
 ## Step 2: Creating the raster data
 
 To generate the raster files, ```*.geotif```, a pyqgis environment is needed. See [here](https://github.com/conda-forge/qgis-feedstock) for more information. After installing qgis, add the path to the executable in [line 11](https://github.com/Metropolis-2/M2_heatmaps/blob/2532329a603c1997adf42603b1b4af2f8e6e09ae/geotifcreate.py#L11) of ```geotifcreate.py```.
