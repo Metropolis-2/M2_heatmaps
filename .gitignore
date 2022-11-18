@@ -11,3 +11,4 @@ images/*.pdf
 *.pyc
 *.gpkg-shm
 *.gpkg-wal
+*movies/*
